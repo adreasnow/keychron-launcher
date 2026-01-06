@@ -42,8 +42,6 @@ let
     ];
 
     buildPhase = ''
-      set -x
-
       export HOME=$TMPDIR
       export npm_config_cache=$TMPDIR/.npm
       export NODE_EXTRA_CA_CERTS=${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt
