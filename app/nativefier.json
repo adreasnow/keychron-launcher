@@ -1,0 +1,52 @@
+{
+  "accessibilityPrompt": true,
+  "alwaysOnTop": false,
+  "arch": "arm64",
+  "asar": false,
+  "blockExternalUrls": false,
+  "bounce": false,
+  "browserwindowOptions": {
+    "webPreferences": {
+      "experimentalFeatures": true,
+      "enableBlinkFeatures": "WebHID"
+    }
+  },
+  "buildDate": 1767665734822,
+  "clearCache": false,
+  "counter": false,
+  "darwinDarkModeSupport": false,
+  "disableContextMenu": false,
+  "disableDevTools": true,
+  "disableGpu": false,
+  "disableOldBuildWarning": false,
+  "electronVersionUsed": "39.2.7",
+  "enableEs3Apis": false,
+  "fastQuit": true,
+  "fullScreen": false,
+  "height": 800,
+  "hideWindowFrame": false,
+  "ignoreCertificate": false,
+  "ignoreGpuBlacklist": false,
+  "insecure": false,
+  "isUpgrade": false,
+  "maximize": false,
+  "name": "Keychron Launcher",
+  "nativefierVersion": "52.0.0",
+  "portable": false,
+  "quiet": false,
+  "showMenuBar": false,
+  "singleInstance": false,
+  "strictInternalUrls": false,
+  "targetUrl": "https://launcher.keychron.com/",
+  "tray": "false",
+  "userAgentHonest": true,
+  "width": 1280,
+  "widevine": false,
+  "win32metadata": {
+    "ProductName": "Keychron Launcher",
+    "InternalName": "Keychron Launcher",
+    "FileDescription": "Keychron Launcher"
+  },
+  "zoom": 1,
+  "oldBuildWarningText": ""
+}
