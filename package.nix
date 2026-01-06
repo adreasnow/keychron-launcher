@@ -1,7 +1,7 @@
 {
   fetchFromGitHub,
   lib,
-  npm,
+  pkgs,
   stdenv,
 }:
 let
@@ -35,17 +35,38 @@ let
       ];
     };
 
+    nativeBuildInputs = [
+      pkgs.nodejs
+      pkgs.cacert
+      pkgs.nodejs
+    ];
+
     buildPhase = ''
-      runHook preBuild
-      ${pkg.npm}
-      
-      codesign --force --deep --sign - Keychron\ Launcher.app
+      set -x
+
+      export HOME=$TMPDIR
+      export npm_config_cache=$TMPDIR/.npm
+      export NODE_EXTRA_CA_CERTS=${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt
+
+      npx nativefier \
+      --name "${appName}" \
+      --electron-version 39.2.7 \
+      --browserwindow-options '{"webPreferences":{"experimentalFeatures":true}}' \
+      --icon icon.icns \
+      --fast-quit \
+      --honest \
+      --enable-features=WebHID \
+      --disable-dev-tools \
+      "https://launcher.keychron.com"
+
+      rm -rf "${appName}-darwin-arm64/${appName}.app/Contents/Resources/app"
+      mv app "${appName}-darwin-arm64/${appName}.app/Contents/Resources/app"
     '';
 
     installPhase = ''
       runHook preInstall
       mkdir -p "$out/Applications"
-      cp -r "Keychron Launcher.app" "$out/Applications/"
+      cp -r "${appName}-darwin-arm64/${appName}.app" "$out/Applications/"
       runHook postInstall
     '';
   };
