@@ -7,7 +7,7 @@
 let
   pname = "keychron-launcher";
   appName = "Keychron Launcher";
-  version = "2026.1.0";
+  version = "2026.1.1";
   meta = {
     description = "Keychron Launcher electron app";
     maintainers = with lib.maintainers; [
@@ -19,7 +19,7 @@ let
     owner = "adreasnow";
     repo = "keychron-launcher";
     tag = "v${version}";
-    hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAA";
+    hash = "sha256-c3uBZeBb0Zo+QQhxVcMPFMe2hIkiA3lnOyaR1T0qZM8=";
   };
 
   darwin = stdenv.mkDerivation {
