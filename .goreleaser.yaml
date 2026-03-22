@@ -21,8 +21,8 @@ before:
     - cp -r app "Keychron Launcher-darwin-arm64/Keychron Launcher.app/Contents/Resources/app"
 
 # ---------------------------------------------------------------------------
-# Build a tiny Go stub, then replace it with the zipped .app bundle so the
-# artifact flows through GoReleaser's archive → homebrew_casks pipeline.
+# Build a tiny Go stub so the archive carries darwin/arm64 metadata through
+# the archive → homebrew_casks pipeline.
 # ---------------------------------------------------------------------------
 builds:
   - id: app-bundle
@@ -32,18 +32,23 @@ builds:
       - darwin
     goarch:
       - arm64
-    hooks:
-      post:
-        - ditto -c -k --keepParent "Keychron Launcher-darwin-arm64/Keychron Launcher.app" "{{ .Path }}"
 
-# format: binary — don't re-archive; just copy the file as-is.
+# ---------------------------------------------------------------------------
+# Zip the .app bundle into a proper archive.
+# The Go stub binary is included automatically but is harmless.
+# homebrew_casks picks this up because it carries goos/goarch metadata.
+# ---------------------------------------------------------------------------
 archives:
   - id: app-archive
     ids:
       - app-bundle
     formats:
-      - binary
-    name_template: "Keychron-Launcher.app.zip"
+      - zip
+    strip_binary_directory: true
+    name_template: "Keychron-Launcher_{{ .Os }}_{{ .Arch }}"
+    files:
+      - src: "Keychron Launcher-darwin-arm64/Keychron Launcher.app/**/*"
+        dst: "Keychron Launcher.app"
 
 changelog:
   sort: asc
@@ -62,7 +67,8 @@ homebrew_casks:
   - name: keychron-launcher
     ids:
       - app-archive
-    binaries: []
+    binaries:
+      - "Keychron Launcher.app/Contents/MacOS/Keychron Launcher"
     custom_block: |
       app "Keychron Launcher.app"
     repository:
