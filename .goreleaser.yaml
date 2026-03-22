@@ -67,8 +67,6 @@ homebrew_casks:
   - name: keychron-launcher
     ids:
       - app-archive
-    binaries:
-      - "Keychron Launcher.app/Contents/MacOS/Keychron Launcher"
     custom_block: |
       app "Keychron Launcher.app"
     repository:
