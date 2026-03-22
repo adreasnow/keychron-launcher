@@ -1,0 +1,69 @@
+version: 2
+project_name: keychron-launcher
+
+# ---------------------------------------------------------------------------
+# Build the macOS .app bundle with nativefier, inject custom app resources,
+# and package as a zip — all before GoReleaser creates the release.
+# ---------------------------------------------------------------------------
+before:
+  hooks:
+    - >-
+      npx nativefier
+      --name "Keychron Launcher"
+      --electron-version 39.2.7
+      --browserwindow-options '{"webPreferences":{"experimentalFeatures":true}}'
+      --icon icon.icns
+      --fast-quit
+      --honest
+      --enable-features=WebHID
+      --disable-dev-tools
+      "https://launcher.keychron.com"
+    - rm -rf "Keychron Launcher-darwin-arm64/Keychron Launcher.app/Contents/Resources/app"
+    - cp -r app "Keychron Launcher-darwin-arm64/Keychron Launcher.app/Contents/Resources/app"
+    - mkdir -p output
+    - ditto -c -k --keepParent "Keychron Launcher-darwin-arm64/Keychron Launcher.app" "output/Keychron-Launcher.app.zip"
+
+builds:
+  - id: app-bundle
+    skip: true
+
+changelog:
+  sort: asc
+
+checksum:
+  name_template: checksums.txt
+  algorithm: sha256
+  extra_files:
+    - glob: output/Keychron-Launcher.app.zip
+
+release:
+  name_template: "v{{ .Version }}"
+  extra_files:
+    - glob: output/Keychron-Launcher.app.zip
+
+# ---------------------------------------------------------------------------
+# Publish a Homebrew Cask to adreasnow/homebrew-tap
+# ---------------------------------------------------------------------------
+homebrew_casks:
+  - name: keychron-launcher
+    custom_block: |
+      app "Keychron Launcher.app"
+    repository:
+      owner: adreasnow
+      name: homebrew-tap
+      token: "{{ .Env.TAPS_KEY }}"
+    homepage: "https://github.com/adreasnow/keychron-launcher"
+    description: "Keychron Launcher electron app"
+    # Strip the quarantine attribute so macOS does not block the unsigned app.
+    hooks:
+      post:
+        install: |
+          system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/Keychron Launcher.app"]
+    uninstall:
+      quit:
+        - "com.electron.keychron-launcher"
+    zap:
+      trash:
+        - "~/Library/Application Support/Keychron Launcher"
+        - "~/Library/Caches/Keychron Launcher"
+        - "~/Library/Preferences/com.electron.keychron-launcher.plist"
